@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package transport;
+
+import "google/api/annotations.proto";
+
+option go_package = "gitlab.com/Sh00ty/hootydb/internal/transport/grpc;transport";
+
+service ReplicatorService {
+
+    rpc LocalRead(LocalReadRequest) returns (LocalReadResponse) {
+        option (google.api.http) = {
+            get : "/v1/repl/read/{key}"
+        };
+    }
+
+    rpc LocalWrite(LocalWriteRequest) returns (LocalWriteResponse) {
+        option (google.api.http) = {
+            get : "/v1/repl/write"
+            body: "*"
+        };
+    }
+}
+
+message Empty {
+    bool ok = 1;
+}
+
+message Value {
+    string val = 1;
+    string ver = 2;
+}
+
+message LocalReadRequest {
+    string key = 1;
+}
+
+message LocalReadResponse {
+    Value value = 1;
+}
+
+message LocalWriteRequest {
+    string key = 1;
+    Value value = 2;
+    
+}
+
+message LocalWriteResponse{
+    bool ok = 1;
+    bool isOldVer = 2;
+    string newVer = 3;
+}
